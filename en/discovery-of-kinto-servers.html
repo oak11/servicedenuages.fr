@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Service de nuages, ">
+
+        <link rel="alternate"  href="http://www.servicedenuages.fr/feeds/all.atom.xml" type="application/atom+xml" title="Service de nuages Full Atom Feed"/>
+
+        <title>How to make the Kinto instances discoverable? // Service de nuages // </title>
+
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.3.0/pure-min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="http://www.servicedenuages.fr/theme/css/pure.css">
+    <link rel="stylesheet" href="http://www.servicedenuages.fr/theme/css/pygments.css">
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/fitvids/1.0.1/jquery.fitvids.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $(".content").fitVids();
+        });
+    </script>
+</head>
+
+<body>
+<div class="pure-g-r" id="layout">
+    <div class="sidebar sidebar-article pure-u">
+        <header class="header-article">
+            <hgroup>
+                <h5>Publié</h5>
+                <p title="~1211 mots">~5mn de lecture 🕑</p>
+                <p>Fri 27 November 2015</p>
+                <a href="/">&larr;Liste des articles</a>
+            </hgroup>
+        </header>
+    </div>
+    <div class="pure-u">
+        <div class="content">
+            <section class="post">
+                <header class="post-header">
+                    <h1>How to make the Kinto instances discoverable?</h1>
+                </header>
+            </section>
+            <blockquote class="epigraph">
+<p>About me:</p>
+<p>Hi! I am Shweta Oak. I got the opportunity to be a part of Mozilla's Kinto team.
+Here, my work focuses on the discovery of Kinto servers.
+I am passionate about Technology and believe in applying it to enhance the lives of people.
+I like to solve problems. When solving problems I try to understand the problem first and
+believe in crafting solutions that address the problem.
+I am enthusiastic about taking up new challenges, learning new things and discovering my potential.</p>
+<p>Why I chose to work on Kinto</p>
+<p>I have previously worked on a project that integrates APIs of social networking accounts/ websites.
+I read up about Kinto, and found the idea of having a storage instance for accounts quite intriguing.
+I read up more on it, and wanted to work on it.</p>
+</blockquote>
+<div class="section" id="what-kinto-does-that-is-not-done-yet">
+<h2>What Kinto does that is not done yet...</h2>
+<p>The differences I observed between Kinto and such existing solutions are:</p>
+<ul class="simple">
+<li>­Decentralized discovery of Kinto instances.</li>
+<li>Fine grained permissions can be imposed on records, collections and buckets which follow a hierarchy.</li>
+<li>Kinto provides for Synchronization. Applications can synchronize data on different devices.</li>
+<li>Multiple clients can access a server in case of a shared resource.</li>
+<li>If an application makes some change, while offline, these changes will be reflected when connection is established back.</li>
+</ul>
+</div>
+<div class="section" id="decentralization-and-discovery">
+<h2>Decentralization and Discovery</h2>
+<p>The Kinto project aims to bring storage instances to everyone, attached to their Firefox Accounts. Currently, Kinto is thought of as a centralized server and everyone authenticates on one instance. Items are shared between users of a same instance. Having multiple services is a good thing for many reasons: it's easier to scale, and allows the users to chose where its data is hosted. It also makes it easy to exchange and make use of information.</p>
+<p>For instance, imagine Alice and Bob. Bob is using Mozilla's servers to store his data, whereas Alice deployed her own Kinto instance.</p>
+<p>There are different use cases:</p>
+<ul class="simple">
+<li>Alice wants to use <a class="reference external" href="https://github.com/leplatrem/routina">Routina</a>, an
+application that stores its data inside a Kinto instance. As such, Routina
+needs a way to discover where it should store its data, and send the requests
+to this server.</li>
+<li>Bob and Alice want to collaborate on a set of data (think about a webapp to
+manage their shared expenses). There should be a way for Alice to host
+everything and grant access to Bob on her data. The webapp should be able to
+use the correct server.</li>
+</ul>
+<p>Discovery is a the process of turning a small piece of information (like a user ID) into the URLs and APIs needed to service some specific request.
+Webfinger and Host-Meta are two possible ways to answer the discovery of instances, let's see the differences between the two.</p>
+</div>
+<div class="section" id="webfinger-vs-host-meta">
+<h2>Webfinger vs Host Meta</h2>
+<p>Webfinger:</p>
+<p>Webfinger is a new internet protocol, like SMTP (email) or HTTP (the web) that gives us the ability to share information about ourselves, and discover things about our friends, without having to remember lots of confusing web addresses.
+With Webfinger you can make personal or professional information about you or your organization discoverable through email addresses. Several well-known web service providers have implemented Webfinger for their customers' profiles, but if you manage your own mail server, it may take a little time.
+WebFinger is used to discover information about entities on the Internet that are identified by a URI using standard HTTP methods over a secure transport. A WebFinger resource returns a JSON object describing the entity that is queried.</p>
+<p>The advantage of webfinger is that the Kinto server can be discovered from the scratch using just a self-hosted email address.</p>
+<dl class="docutils">
+<dt>The flow discovery of a kinto server would be:</dt>
+<dd><ol class="first last arabic">
+<li><p class="first">Create a central repository about the location of the server.</p>
+</li>
+<li><p class="first">The user specifies the location of its server on the client side.</p>
+</li>
+<li><dl class="first docutils">
+<dt>A Webfinger request is done on the domain to locate the server. Two scenarios may occur:</dt>
+<dd><p class="first">Wefinger is supported by the domain:
+WebFinger services are hosted by wf.example.net.  Suppose a client issues a query for
+acct:alice@example.com like this:</p>
+<dl class="docutils">
+<dt>GET /.well-known/webfinger?</dt>
+<dd><p class="first last">resource=acct%3Aalice%40example.com HTTP/1.1</p>
+</dd>
+<dt>Host: example.com</dt>
+<dd><p class="first last">The server might respond with this:</p>
+</dd>
+</dl>
+<p>HTTP/1.1 307 Temporary Redirect
+Access-Control-Allow-Origin: *
+Location: <a class="reference external" href="https://wf.example.net/example.com/webfinger?resource=acct%3Aalice%40example.com">https://wf.example.net/example.com/webfinger?resource=acct%3Aalice%40example.com</a></p>
+<p class="last">The client can then follow the redirection, reissuing the request to
+the URI provided in the Location header.  Note that the server will
+include any required URI parameters in the Location header value,
+which could be different than the URI parameters the client
+originally used.</p>
+</dd>
+</dl>
+<ul class="simple">
+<li>Webfinger is not supported:
+Look up the central repository. Get the location of the server.</li>
+</ul>
+</li>
+<li><p class="first">It caches the location of the Kinto server and the location of the Host Meta server until there is a problem connecting with the Kinto instance, in that case it retries to get the information.</p>
+</li>
+</ol>
+</dd>
+</dl>
+<p>Host Meta:</p>
+<p>Host Meta is a method for locating host metadata as well as information about individual resources controlled by the host.
+With Host Meta, the user will specify the location of the server serving the Host Meta file, which will contain information such as where the Kinto server is, this also has the possibility of adding some other server locations.
+There is a need for a metadata document about a host, a document to hold actual protocol metadata. A feature of the host-meta proposal is the use of XRD as the document schema. This simplifies the protocols looking to use it as they all already require the ability to parse XRD documents. For example, this simple host-meta document for the ‘mozilla.org’ and ‘<a class="reference external" href="https://www.mozilla.org">https://www.mozilla.org</a>‘ hosts provides a link for host-wide copyright information and a link template providing a URI for obtaining resource-specific metadata for each resource within the host-meta document scope.</p>
+<p>The flow for discovery of kinto servers would be something like:</p>
+<ol class="arabic">
+<li><p class="first">The user specifies the location of its server on the client side.</p>
+</li>
+<li><p class="first">The client then does a lookup on the server to find the location of the Kinto server, using Host Meta. For example something like this:
+<a class="reference external" href="https://www.mozilla.org/.well-known/host-meta">https://www.mozilla.org/.well-known/host-meta</a></p>
+</li>
+<li><dl class="first docutils">
+<dt>Get the Host Meta document which would look something like:</dt>
+<dd><p class="first last">&lt;!-- NOTE: this host-meta end-point is a pre-alpha work in progress. Don't rely on it. →
+&lt;XRD xmlns="<a class="reference external" href="http://docs.oasis-open.org/ns/xri/xrd-1.0">http://docs.oasis-open.org/ns/xri/xrd-1.0</a>"xmlns:hm="http://host-meta.net/xrd/1.0"&gt;&lt;hm:Host xmlns="http://host-meta.net/         xrd/1.0"&gt;mozilla.com&lt;hm:Host&gt;                                                                                                                                                                                                                                                           &lt;Link rel="lrdd" template="http://webfinger.mozillalabs.com/webfinger.php?q={uri}"&gt;
+&lt;Title&gt;Resource Descriptor&lt;/Title&gt;
+&lt;/Link&gt;
+&lt;/XRD&gt;</p>
+</dd>
+</dl>
+</li>
+<li><p class="first">Check the lrdd field. The template for obtaining resource specific metadata is present.</p>
+</li>
+<li><p class="first">Using this template, on inserting the {uri}, we can get the metadata of the kinto server.</p>
+</li>
+<li><p class="first">It caches the location of the Kinto server and the location of the Host Meta server until there is a problem connecting with the Kinto instance, in that case it retries to get the information from the Host Meta.</p>
+</li>
+</ol>
+<blockquote>
+Creating the Host Meta site is one of the primary tasks. We can do this by having the Host Meta file generated statically by a script.</blockquote>
+</div>
+<div class="section" id="why-is-host-meta-a-better-solution">
+<h2>Why is Host Meta a better solution?</h2>
+<p>The advantage of Host Meta over Webfinger is that a central repository is not needed. The central repository was needed in case Webfinger was not supported by a domain. But, using Host Meta, we get the template from the lrdd, that can be used irrespective of the Webfinger support.
+In practice it would be easier to use a single account for FxA identity and it's easier to configure the Kinto server in client/app settings than to have to create an FxA account from a self-hosted mailserver and then a  webfinger host.</p>
+</div>
+
+            <div class="hr"></div>
+            <a href="#" class="go-top">Revenir au début</a>
+<div class="comments">
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+        var disqus_shortname = "servicedenuages"; // required: replace example with your forum shortname
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div><footer class="footer">
+    <p>&copy; Service de nuages &ndash;
+        Développé avec <a href="https://github.com/PurePelicanTheme/pure">Pure Theme</a>
+        et <a href="http://blog.getpelican.com/">Pelican</a>
+    </p>
+</footer>        </div>
+    </div>
+</div>
+    <script>
+        var $top = $('.go-top');
+
+        // Show or hide the sticky footer button
+        $(window).scroll(function() {
+            if ($(this).scrollTop() > 200) {
+                $top.fadeIn(200);
+            } else {
+                $top.fadeOut(200);
+            }
+        });
+
+        // Animate the scroll to top
+        $top.click(function(event) {
+            event.preventDefault();
+            $('html, body').animate({scrollTop: 0}, 300);
+        })
+
+        // Makes sure that the href="#" attached to the <a> elements
+        // don't scroll you back up the page.
+        $('body').on('click', 'a[href="#"]', function(event) {
+            event.preventDefault();
+        });
+    </script>
+<!-- Piwik -->
+<script type="text/javascript">
+  var _paq = _paq || [];
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    var u="//piwik.notmyidea.org/";
+    _paq.push(['setTrackerUrl', u+'piwik.php']);
+    _paq.push(['setSiteId', 1]);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script>
+<noscript><p><img src="//piwik.notmyidea.org/piwik.php?idsite=1" style="border:0;" alt="" /></p></noscript>
+<!-- End Piwik Code -->
+  <script src="http://www.servicedenuages.fr/theme/js/instantclick.min.js" data-no-instant></script>
+  <script data-no-instant>InstantClick.init();</script>
+</body>
+</html>
