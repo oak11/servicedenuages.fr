@@ -1,128 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom"><title>Service de nuages</title><link href="http://www.servicedenuages.fr/en/" rel="alternate"></link><link href="http://www.servicedenuages.fr/feeds/all-en.atom.xml" rel="self"></link><id>http://www.servicedenuages.fr/en/</id><updated>2015-11-27T00:00:00+01:00</updated><entry><title>How to make the Kinto instances discoverable?</title><link href="http://www.servicedenuages.fr/en/discovery-of-kinto-servers" rel="alternate"></link><updated>2015-11-27T00:00:00+01:00</updated><author><name>Service de Nuages</name></author><id>tag:www.servicedenuages.fr,2015-11-27:en/discovery-of-kinto-servers</id><summary type="html">&lt;blockquote class="epigraph"&gt;
-&lt;p&gt;About me:&lt;/p&gt;
-&lt;p&gt;Hi! I am Shweta Oak. I got the opportunity to be a part of Mozilla's Kinto team.
+About Me&lt;/blockquote&gt;
+&lt;p&gt;Hi! I am Shweta Oak. I got the opportunity to be part of Mozilla's Kinto team.
 Here, my work focuses on the discovery of Kinto servers.
 I am passionate about Technology and believe in applying it to enhance the lives of people.
-I like to solve problems. When solving problems I try to understand the problem first and
-believe in crafting solutions that address the problem.
-I am enthusiastic about taking up new challenges, learning new things and discovering my potential.&lt;/p&gt;
-&lt;p&gt;Why I chose to work on Kinto&lt;/p&gt;
-&lt;p&gt;I have previously worked on a project that integrates APIs of social networking accounts/ websites.
-I read up about Kinto, and found the idea of having a storage instance for accounts quite intriguing.
-I read up more on it, and wanted to work on it.&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;div class="section" id="what-kinto-does-that-is-not-done-yet"&gt;
-&lt;h2&gt;What Kinto does that is not done yet...&lt;/h2&gt;
-&lt;p&gt;The differences I observed between Kinto and such existing solutions are:&lt;/p&gt;
-&lt;ul class="simple"&gt;
-&lt;li&gt;­Decentralized discovery of Kinto instances.&lt;/li&gt;
-&lt;li&gt;Fine grained permissions can be imposed on records, collections and buckets which follow a hierarchy.&lt;/li&gt;
-&lt;li&gt;Kinto provides for Synchronization. Applications can synchronize data on different devices.&lt;/li&gt;
-&lt;li&gt;Multiple clients can access a server in case of a shared resource.&lt;/li&gt;
-&lt;li&gt;If an application makes some change, while offline, these changes will be reflected when connection is established back.&lt;/li&gt;
-&lt;/ul&gt;
+I like to solve problems. While solving problems, I like exploring and crafting various
+solutions to find the best one. I am enthusiastic about taking up new challenges, learning
+new things and discovering my potential.&lt;/p&gt;
+&lt;div class="section" id="how-does-an-application-discover-the-location-of-a-kinto-server"&gt;
+&lt;h2&gt;How does an application discover the location of a Kinto server?&lt;/h2&gt;
+&lt;p&gt;Unlike Parse or Firebase which are centralized services, Kinto can be ran by anyone
+and anywhere. However, there has to be a way for the user to choose where the data
+are getting stored. In addition to configuring the frontend app for their personal
+server, users can get the  location of the server in the form of a URL which can be
+shared with another user in order to collaborate and share data between multiple
+users on the same Kinto server.&lt;/p&gt;
+&lt;p&gt;To solve this problem, the following approach can be taken:&lt;/p&gt;
 &lt;/div&gt;
-&lt;div class="section" id="decentralization-and-discovery"&gt;
-&lt;h2&gt;Decentralization and Discovery&lt;/h2&gt;
-&lt;p&gt;The Kinto project aims to bring storage instances to everyone, attached to their Firefox Accounts. Currently, Kinto is thought of as a centralized server and everyone authenticates on one instance. Items are shared between users of a same instance. Having multiple services is a good thing for many reasons: it's easier to scale, and allows the users to chose where its data is hosted. It also makes it easy to exchange and make use of information.&lt;/p&gt;
-&lt;p&gt;For instance, imagine Alice and Bob. Bob is using Mozilla's servers to store his data, whereas Alice deployed her own Kinto instance.&lt;/p&gt;
-&lt;p&gt;There are different use cases:&lt;/p&gt;
-&lt;ul class="simple"&gt;
-&lt;li&gt;Alice wants to use &lt;a class="reference external" href="https://github.com/leplatrem/routina"&gt;Routina&lt;/a&gt;, an
-application that stores its data inside a Kinto instance. As such, Routina
-needs a way to discover where it should store its data, and send the requests
-to this server.&lt;/li&gt;
-&lt;li&gt;Bob and Alice want to collaborate on a set of data (think about a webapp to
-manage their shared expenses). There should be a way for Alice to host
-everything and grant access to Bob on her data. The webapp should be able to
-use the correct server.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;Discovery is a the process of turning a small piece of information (like a user ID) into the URLs and APIs needed to service some specific request.
-Webfinger and Host-Meta are two possible ways to answer the discovery of instances, let's see the differences between the two.&lt;/p&gt;
+&lt;div class="section" id="let-the-user-enter-the-location-of-its-kinto-instance-the-first-time"&gt;
+&lt;h2&gt;Let the user enter the location of its Kinto instance, the first time.&lt;/h2&gt;
+&lt;p&gt;Add a way, on client side, to specify where the server is. For instance, this should
+be done in JavaScript and HTML on  top of the Kinto.js client.
+It is basically a user interface for how to specify the "remote server" to use. The
+user has to enter the location of the server only once, the first time he uses a
+Kinto instance, later on, this location will be discovered.&lt;/p&gt;
+&lt;p&gt;The best way to start doing this is to do it in a webpage that uses Kinto.js and let
+the user specify the server location. Once we have this, we will need to make this
+project re-usable by others.&lt;/p&gt;
 &lt;/div&gt;
-&lt;div class="section" id="webfinger-vs-host-meta"&gt;
-&lt;h2&gt;Webfinger vs Host Meta&lt;/h2&gt;
-&lt;p&gt;Webfinger:&lt;/p&gt;
-&lt;p&gt;Webfinger is a new internet protocol, like SMTP (email) or HTTP (the web) that gives us the ability to share information about ourselves, and discover things about our friends, without having to remember lots of confusing web addresses.
-With Webfinger you can make personal or professional information about you or your organization discoverable through email addresses. Several well-known web service providers have implemented Webfinger for their customers' profiles, but if you manage your own mail server, it may take a little time.
-WebFinger is used to discover information about entities on the Internet that are identified by a URI using standard HTTP methods over a secure transport. A WebFinger resource returns a JSON object describing the entity that is queried.&lt;/p&gt;
-&lt;p&gt;The advantage of webfinger is that the Kinto server can be discovered from the scratch using just a self-hosted email address.&lt;/p&gt;
-&lt;dl class="docutils"&gt;
-&lt;dt&gt;The flow discovery of a kinto server would be:&lt;/dt&gt;
-&lt;dd&gt;&lt;ol class="first last arabic"&gt;
-&lt;li&gt;&lt;p class="first"&gt;Create a central repository about the location of the server.&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;p class="first"&gt;The user specifies the location of its server on the client side.&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;dl class="first docutils"&gt;
-&lt;dt&gt;A Webfinger request is done on the domain to locate the server. Two scenarios may occur:&lt;/dt&gt;
-&lt;dd&gt;&lt;p class="first"&gt;Wefinger is supported by the domain:
-WebFinger services are hosted by wf.example.net.  Suppose a client issues a query for
-acct:alice@example.com like this:&lt;/p&gt;
-&lt;dl class="docutils"&gt;
-&lt;dt&gt;GET /.well-known/webfinger?&lt;/dt&gt;
-&lt;dd&gt;&lt;p class="first last"&gt;resource=acct%3Aalice%40example.com HTTP/1.1&lt;/p&gt;
-&lt;/dd&gt;
-&lt;dt&gt;Host: example.com&lt;/dt&gt;
-&lt;dd&gt;&lt;p class="first last"&gt;The server might respond with this:&lt;/p&gt;
-&lt;/dd&gt;
-&lt;/dl&gt;
-&lt;p&gt;HTTP/1.1 307 Temporary Redirect
-Access-Control-Allow-Origin: *
-Location: &lt;a class="reference external" href="https://wf.example.net/example.com/webfinger?resource=acct%3Aalice%40example.com"&gt;https://wf.example.net/example.com/webfinger?resource=acct%3Aalice%40example.com&lt;/a&gt;&lt;/p&gt;
-&lt;p class="last"&gt;The client can then follow the redirection, reissuing the request to
-the URI provided in the Location header.  Note that the server will
-include any required URI parameters in the Location header value,
-which could be different than the URI parameters the client
-originally used.&lt;/p&gt;
-&lt;/dd&gt;
-&lt;/dl&gt;
-&lt;ul class="simple"&gt;
-&lt;li&gt;Webfinger is not supported:
-Look up the central repository. Get the location of the server.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;p class="first"&gt;It caches the location of the Kinto server and the location of the Host Meta server until there is a problem connecting with the Kinto instance, in that case it retries to get the information.&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ol&gt;
-&lt;/dd&gt;
-&lt;/dl&gt;
-&lt;p&gt;Host Meta:&lt;/p&gt;
-&lt;p&gt;Host Meta is a method for locating host metadata as well as information about individual resources controlled by the host.
-With Host Meta, the user will specify the location of the server serving the Host Meta file, which will contain information such as where the Kinto server is, this also has the possibility of adding some other server locations.
-There is a need for a metadata document about a host, a document to hold actual protocol metadata. A feature of the host-meta proposal is the use of XRD as the document schema. This simplifies the protocols looking to use it as they all already require the ability to parse XRD documents. For example, this simple host-meta document for the ‘mozilla.org’ and ‘&lt;a class="reference external" href="https://www.mozilla.org"&gt;https://www.mozilla.org&lt;/a&gt;‘ hosts provides a link for host-wide copyright information and a link template providing a URI for obtaining resource-specific metadata for each resource within the host-meta document scope.&lt;/p&gt;
-&lt;p&gt;The flow for discovery of kinto servers would be something like:&lt;/p&gt;
-&lt;ol class="arabic"&gt;
-&lt;li&gt;&lt;p class="first"&gt;The user specifies the location of its server on the client side.&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;p class="first"&gt;The client then does a lookup on the server to find the location of the Kinto server, using Host Meta. For example something like this:
-&lt;a class="reference external" href="https://www.mozilla.org/.well-known/host-meta"&gt;https://www.mozilla.org/.well-known/host-meta&lt;/a&gt;&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;dl class="first docutils"&gt;
-&lt;dt&gt;Get the Host Meta document which would look something like:&lt;/dt&gt;
-&lt;dd&gt;&lt;p class="first last"&gt;&amp;lt;!-- NOTE: this host-meta end-point is a pre-alpha work in progress. Don't rely on it. →
-&amp;lt;XRD xmlns="&lt;a class="reference external" href="http://docs.oasis-open.org/ns/xri/xrd-1.0"&gt;http://docs.oasis-open.org/ns/xri/xrd-1.0&lt;/a&gt;"xmlns:hm="http://host-meta.net/xrd/1.0"&amp;gt;&amp;lt;hm:Host xmlns="http://host-meta.net/         xrd/1.0"&amp;gt;mozilla.com&amp;lt;hm:Host&amp;gt;                                                                                                                                                                                                                                                           &amp;lt;Link rel="lrdd" template="http://webfinger.mozillalabs.com/webfinger.php?q={uri}"&amp;gt;
-&amp;lt;Title&amp;gt;Resource Descriptor&amp;lt;/Title&amp;gt;
-&amp;lt;/Link&amp;gt;
-&amp;lt;/XRD&amp;gt;&lt;/p&gt;
-&lt;/dd&gt;
-&lt;/dl&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;p class="first"&gt;Check the lrdd field. The template for obtaining resource specific metadata is present.&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;p class="first"&gt;Using this template, on inserting the {uri}, we can get the metadata of the kinto server.&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;p class="first"&gt;It caches the location of the Kinto server and the location of the Host Meta server until there is a problem connecting with the Kinto instance, in that case it retries to get the information from the Host Meta.&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ol&gt;
+&lt;div class="section" id="store-this-location-remotely"&gt;
+&lt;h2&gt;Store this location remotely&lt;/h2&gt;
+&lt;p&gt;Then, it would be good if we were able, for a given authenticated user, to automatically
+discover where is their Kinto instance is located. To do that we will need to find a solution
+to save this location somewhere when the user enters the location of the server for the first
+time and then, the information will be discovered.&lt;/p&gt;
+&lt;p&gt;We also need to keep in mind that users may have multiple Kinto instances with regards to the
+application they will be using. The discovery of Kinto will be cross application too.&lt;/p&gt;
+&lt;p&gt;We will now need to store this information remotely. This is where the ideas of a central
+repository and of a Distributed Hash Table (DHT) come into play. Since a DHT is by far more
+complex than a central repository, we will start with the use of a central server.&lt;/p&gt;
+&lt;p&gt;(B1) Central Repository:&lt;/p&gt;
+&lt;p&gt;A small Javascript helper to lookup the location of the server remotely once the user is connected. The flow would then look like this:&lt;/p&gt;
 &lt;blockquote&gt;
-Creating the Host Meta site is one of the primary tasks. We can do this by having the Host Meta file generated statically by a script.&lt;/blockquote&gt;
+&lt;ol class="arabic simple"&gt;
+&lt;li&gt;Connect to your account (Github, Twitter, FxA) using OAuth.&lt;/li&gt;
+&lt;li&gt;The client fetches the location of the Kinto server on a central Kinto collection using the user credentials.&lt;/li&gt;
+&lt;li&gt;The Kinto.js collection is configured to use this remote.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;pros of using a central repository:
+Its really easy to setup and implement. The application searches for the user’s server by looking up the central repository.&lt;/p&gt;
+&lt;p&gt;cons of using a central repository:
+The user needs to trust a 3rd party as the links to the information of the user is being stored in one place.
+There is a possibility of leak of information that someone is connected to a Kinto instance, and where this instance is.&lt;/p&gt;
+&lt;p&gt;(B2) Distributed Hash Table (DHT)&lt;/p&gt;
+&lt;p&gt;Once we have this mechanism in place, we can expand it in order to rely on a DHT rather than on a central repositories. DHT is a decentralized distributed system that provides a lookup service similar to a hash table. Different options can be used here (Matrix.org is one).&lt;/p&gt;
+&lt;p&gt;pros of using DHT:
+* The user does not have to trust one server only. There are multiple servers that hold pieces of the data.
+* It is possible to add your own server to the DHT.&lt;/p&gt;
+&lt;p&gt;cons of using DHT:
+* It might be complex to deploy.
+* Harder to implement and verify
+* It might be an overkill solution.
+* All the data in a DHT are public so we would necessarily need to encrypt the data there.&lt;/p&gt;
 &lt;/div&gt;
-&lt;div class="section" id="why-is-host-meta-a-better-solution"&gt;
-&lt;h2&gt;Why is Host Meta a better solution?&lt;/h2&gt;
-&lt;p&gt;The advantage of Host Meta over Webfinger is that a central repository is not needed. The central repository was needed in case Webfinger was not supported by a domain. But, using Host Meta, we get the template from the lrdd, that can be used irrespective of the Webfinger support.
-In practice it would be easier to use a single account for FxA identity and it's easier to configure the Kinto server in client/app settings than to have to create an FxA account from a self-hosted mailserver and then a  webfinger host.&lt;/p&gt;
+&lt;div class="section" id="eventually-at-the-end-we-should-expand-this-mechanism-to-other-services-locations-using-host-meta"&gt;
+&lt;h2&gt;Eventually at the end we should expand this mechanism to other services locations, using Host-Meta.&lt;/h2&gt;
+&lt;blockquote&gt;
+In addition to discovering the location of the Kinto server, add the possibility to discover other
+services (such as the identity service provider for the remote instance (ie Firefox Accounts))
+using Host-Meta. Host-Meta is a browser module that is used for looking up the metadata of a domain
+name. It is useful for discovery of services associated with the host.&lt;/blockquote&gt;
+&lt;p&gt;And once we're there, all the Kinto instances will be discoverable !&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="note-to-the-reader"&gt;
+&lt;h2&gt;Note to the reader:&lt;/h2&gt;
+&lt;p&gt;Thanks for your interest in this article, If you think there is a better approach we can take,
+than the one given above or, if there is anything you would like to share with us regarding
+this article, do comment below. We look forward to exploring more solutions and making the
+project even better through your feedback :)&lt;/p&gt;
 &lt;/div&gt;
 </summary></entry><entry><title>Kinto.js 1.0 released</title><link href="http://www.servicedenuages.fr/en/kinto-js-1-0-released" rel="alternate"></link><updated>2015-10-27T00:00:00+01:00</updated><author><name>Service de Nuages</name></author><id>tag:www.servicedenuages.fr,2015-10-27:en/kinto-js-1-0-released</id><summary type="html">&lt;p&gt;&lt;a class="reference external" href="https://kintojs.readthedocs.org/"&gt;Kinto.js&lt;/a&gt; is an offline-first JavaScript client leveraging the &lt;a class="reference external" href="https://kinto.readthedocs.org/"&gt;Kinto API&lt;/a&gt; for data synchronization. In a world where connectivity isn't always guaranteed, local persistence in the browser has become an &lt;a class="reference external" href="http://offlinefirst.org/"&gt;identified priority&lt;/a&gt; for Web applications, especially on mobile.&lt;/p&gt;
 &lt;p&gt;The basic principle is simple; save your data locally, assuming there's no network connectivity. Then as soon as it's available, retrieve remote changes and push your local data to a remote server.&lt;/p&gt;
